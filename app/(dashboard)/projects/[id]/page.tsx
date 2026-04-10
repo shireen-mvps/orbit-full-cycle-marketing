@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ModuleCard } from "@/components/orbit/module-card";
+import { Download } from "lucide-react";
 import type { OrbitProject } from "@/types/orbit";
 
 export default async function ProjectPage({
@@ -83,6 +84,23 @@ export default async function ProjectPage({
           <ModuleCard key={mod.number} {...mod} />
         ))}
       </div>
+
+      {/* Export — only when all 3 modules complete */}
+      {completed === 3 && (
+        <div className="mt-8 pt-8 border-t border-[var(--border)] flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-[var(--foreground)]">Strategy report ready</p>
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">Download a polished PDF of your full market strategy.</p>
+          </div>
+          <a
+            href={`/api/projects/${id}/export`}
+            className="flex items-center gap-2 bg-[var(--primary)] text-[var(--primary-foreground)] px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap shrink-0"
+          >
+            <Download size={14} />
+            Export PDF
+          </a>
+        </div>
+      )}
     </div>
   );
 }

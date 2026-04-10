@@ -123,3 +123,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Radar chart animations */
+@keyframes radar-fade-in {
+  from { opacity: 0; transform: scale(0.15); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes radar-axis-in {
+  from { opacity: 0; transform: scaleY(0); }
+  to   { opacity: 1; transform: scaleY(1); }
+}
+@keyframes radar-ring-in {
+  from { opacity: 0; transform: scale(0); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.radar-ring {
+  transform-origin: 150px 150px;
+  transform-box: fill-box;
+  animation: radar-ring-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.radar-polygon {
+  transform-origin: 150px 150px;
+  transform-box: fill-box;
+  animation: radar-fade-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}

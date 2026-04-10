@@ -8,7 +8,7 @@ interface TopBarProps {
   creditsTotal?: number;
 }
 
-export function TopBar({ onMenuClick, creditsUsed, creditsTotal = 30 }: TopBarProps) {
+export function TopBar({ onMenuClick, creditsUsed, creditsTotal = 10 }: TopBarProps) {
   const used = creditsUsed ?? null;
   const pct = used !== null ? Math.min((used / creditsTotal) * 100, 100) : 0;
 

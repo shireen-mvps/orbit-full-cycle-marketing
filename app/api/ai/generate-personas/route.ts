@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { anthropic, MODEL } from "@/lib/anthropic";
-import { rateLimiter } from "@/lib/rate-limit";
+import { rateLimiter, globalRateLimiter } from "@/lib/rate-limit";
 import { sanitizeInput } from "@/lib/validations";
 import { supabase } from "@/lib/supabase";
 import type { OrbitProject } from "@/types/orbit";
@@ -10,10 +10,18 @@ export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { success: globalOk } = await globalRateLimiter.limit("global");
+  if (!globalOk) {
+    return NextResponse.json(
+      { error: "Service temporarily unavailable. Please try again later." },
+      { status: 503 }
+    );
+  }
+
   const { success, remaining } = await rateLimiter.limit(userId);
   if (!success) {
     return NextResponse.json(
-      { error: "Daily AI credit limit reached (30/day). Try again tomorrow." },
+      { error: "Daily AI credit limit reached (10/day). Try again tomorrow." },
       { status: 429, headers: { "X-Credits-Remaining": "0" } }
     );
   }
@@ -95,7 +103,7 @@ ${brandContext ? "- Align each persona's triggers and hooks with the brand voice
   try {
     const message = await anthropic.messages.create({
       model: MODEL.deep,
-      max_tokens: 3000,
+      max_tokens: 2500,
       messages: [{ role: "user", content: prompt }],
     });
 

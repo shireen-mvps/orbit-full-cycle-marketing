@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
+import { CreditsProvider } from "@/context/credits-context";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
+    <CreditsProvider>
     <div className="flex h-screen overflow-hidden bg-[var(--background)]">
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -32,5 +34,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
+    </CreditsProvider>
   );
 }

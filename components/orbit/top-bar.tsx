@@ -1,16 +1,12 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import { useCredits, CREDITS_TOTAL } from "@/context/credits-context";
 
-interface TopBarProps {
-  onMenuClick: () => void;
-  creditsUsed?: number;
-  creditsTotal?: number;
-}
-
-export function TopBar({ onMenuClick, creditsUsed, creditsTotal = 3 }: TopBarProps) {
-  const used = creditsUsed ?? null;
-  const pct = used !== null ? Math.min((used / creditsTotal) * 100, 100) : 0;
+export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
+  const { remaining } = useCredits();
+  const used = remaining !== null ? CREDITS_TOTAL - remaining : null;
+  const pct = used !== null ? Math.min((used / CREDITS_TOTAL) * 100, 100) : 0;
 
   return (
     <header className="h-12 border-b border-[var(--border)] flex items-center px-4 gap-4 shrink-0 bg-[var(--background)]">
@@ -34,7 +30,7 @@ export function TopBar({ onMenuClick, creditsUsed, creditsTotal = 3 }: TopBarPro
             />
           </div>
           <span className="text-xs text-[var(--muted-foreground)] tabular-nums">
-            {used !== null ? `${used} / ${creditsTotal}` : `-- / ${creditsTotal}`}
+            {used !== null ? `${used} / ${CREDITS_TOTAL}` : `-- / ${CREDITS_TOTAL}`}
           </span>
         </div>
       </div>

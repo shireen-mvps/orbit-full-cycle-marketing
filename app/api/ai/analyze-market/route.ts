@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const { success, remaining } = await rateLimiter.limit(userId);
   if (!success) {
     return NextResponse.json(
-      { error: "Daily demo limit reached (3 generations/day). Clone the repo to run your own instance: github.com/shireen-mvps/orbit-full-cycle-marketing" },
+      { error: "Daily demo limit reached (6 credits/day). Clone the repo to run your own instance: github.com/shireen-mvps/orbit-full-cycle-marketing" },
       { status: 429, headers: { "X-Credits-Remaining": "0" } }
     );
   }
@@ -125,7 +125,7 @@ Rules:
 
     return NextResponse.json(
       { data: result },
-      { headers: { "X-Credits-Remaining": String(remaining - 1) } }
+      { headers: { "X-Credits-Remaining": String(remaining) } }
     );
   } catch (err) {
     console.error("Market intel AI error:", err);

@@ -95,8 +95,8 @@
   transition: 0.5s;
   animation: gradient_301 5s ease infinite;
   border: double 4px transparent;
-  background-image: linear-gradient(#212121, #212121),
-    linear-gradient(137.48deg, #ffdb3b 10%, #fe53bb 45%, #8f51ea 67%, #0044ff 87%);
+  background-image: linear-gradient(oklch(0.09 0.008 265), oklch(0.09 0.008 265)),
+    linear-gradient(137.48deg, #00d4b4 10%, #06b6d4 40%, #2dd4bf 65%, #0891b2 90%);
   background-origin: border-box;
   background-clip: content-box, border-box;
   position: relative;
@@ -119,15 +119,15 @@
   backdrop-filter: blur(1rem);
   border-radius: 5rem;
 }
-.orbit-star-btn:hover .orbit-star-container { z-index: 1; background-color: #212121; }
+.orbit-star-btn:hover .orbit-star-container { z-index: 1; background-color: oklch(0.09 0.008 265); }
 .orbit-star-btn:hover  { transform: scale(1.1); }
 .orbit-star-btn:active {
-  border: double 4px #fe53bb;
+  border: double 4px #00d4b4;
   background-origin: border-box;
   background-clip: content-box, border-box;
   animation: none;
 }
-.orbit-star-btn:active .orbit-circle { background: #fe53bb; }
+.orbit-star-btn:active .orbit-circle { background: #00d4b4; }
 .orbit-star-glow { position: absolute; display: flex; width: 12rem; }
 .orbit-circle {
   width: 100%; height: 30px;
@@ -135,8 +135,8 @@
   animation: pulse_3011 4s infinite;
   z-index: -1;
 }
-.orbit-circle:nth-of-type(1) { background: rgba(254, 83, 186, 0.636); }
-.orbit-circle:nth-of-type(2) { background: rgba(142, 81, 234, 0.704); }
+.orbit-circle:nth-of-type(1) { background: rgba(0, 212, 180, 0.55); }
+.orbit-circle:nth-of-type(2) { background: rgba(6, 182, 212, 0.45); }
 .orbit-star-field {
   position: relative;
   background: transparent;

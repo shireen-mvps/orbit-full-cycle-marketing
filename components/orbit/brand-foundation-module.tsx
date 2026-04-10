@@ -8,6 +8,7 @@ import type { BrandFoundation, MarketIntel } from "@/types/orbit";
 import { BrandFoundationForm } from "./brand-foundation-form";
 import { BrandFoundationResults } from "./brand-foundation-results";
 import { ModuleLoading } from "./module-loading";
+import { useCredits } from "@/context/credits-context";
 
 const LOADING_STEPS = [
   "Reviewing market intelligence...",
@@ -31,6 +32,7 @@ export function BrandFoundationModule({ projectId, projectName, initialData, mar
   const [results, setResults] = useState<BrandFoundation | null>(initialData);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { update: updateCredits } = useCredits();
 
   async function handleSubmit(data: { productName: string; productDescription: string; uniqueFeatures: string[]; targetMarket: string }) {
     setError(null);
@@ -50,6 +52,8 @@ export function BrandFoundationModule({ projectId, projectName, initialData, mar
         setView("form");
         return;
       }
+      const creditsHeader = res.headers.get("X-Credits-Remaining");
+      if (creditsHeader !== null) updateCredits(Number(creditsHeader));
       const { data: result } = await res.json();
       setResults(result);
       setView("results");

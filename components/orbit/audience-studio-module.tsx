@@ -8,6 +8,7 @@ import type { AudienceStudio, BrandFoundation } from "@/types/orbit";
 import { AudienceStudioForm } from "./audience-studio-form";
 import { AudienceStudioResults } from "./audience-studio-results";
 import { ModuleLoading } from "./module-loading";
+import { useCredits } from "@/context/credits-context";
 
 const LOADING_STEPS = [
   "Reviewing brand foundation...",
@@ -31,6 +32,7 @@ export function AudienceStudioModule({ projectId, projectName, initialData, bran
   const [results, setResults] = useState<AudienceStudio | null>(initialData);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { update: updateCredits } = useCredits();
 
   async function handleSubmit(data: { targetMarketDescription: string; painPoints: string; channels: string }) {
     setError(null);
@@ -50,6 +52,8 @@ export function AudienceStudioModule({ projectId, projectName, initialData, bran
         setView("form");
         return;
       }
+      const creditsHeader = res.headers.get("X-Credits-Remaining");
+      if (creditsHeader !== null) updateCredits(Number(creditsHeader));
       const { data: result } = await res.json();
       setResults(result);
       setView("results");

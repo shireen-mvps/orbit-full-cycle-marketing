@@ -8,6 +8,7 @@ import type { MarketIntel } from "@/types/orbit";
 import { MarketIntelForm, type CompetitorInput } from "./market-intel-form";
 import { MarketIntelResults } from "./market-intel-results";
 import { ModuleLoading } from "./module-loading";
+import { useCredits } from "@/context/credits-context";
 
 const LOADING_STEPS = [
   "Analyzing competitor landscape...",
@@ -30,6 +31,7 @@ export function MarketIntelModule({ projectId, projectName, initialData }: Props
   const [results, setResults] = useState<MarketIntel | null>(initialData);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { update: updateCredits } = useCredits();
 
   async function handleSubmit(data: { industry: string; productCategory: string; competitors: CompetitorInput[] }) {
     setError(null);
@@ -49,6 +51,8 @@ export function MarketIntelModule({ projectId, projectName, initialData }: Props
         setView("form");
         return;
       }
+      const creditsHeader = res.headers.get("X-Credits-Remaining");
+      if (creditsHeader !== null) updateCredits(Number(creditsHeader));
       const { data: result } = await res.json();
       setResults(result);
       setView("results");

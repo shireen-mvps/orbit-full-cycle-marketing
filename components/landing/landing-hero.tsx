@@ -30,7 +30,7 @@ export function LandingHero() {
           </span>
         </motion.div>
 
-        <motion.h1 variants={fadeUp(0.08)} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight" style={{ fontFamily: "var(--font-syne)" }}>
+        <motion.h1 variants={fadeUp(0.08)} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight" style={{ fontFamily: "var(--font-montserrat)" }}>
           From market gap{" "}
           <span style={{ color: "oklch(0.72 0.16 185)", textShadow: "0 0 40px oklch(0.72 0.16 185 / 0.4)" }}>to brand strategy</span>
           <br />in three modules.

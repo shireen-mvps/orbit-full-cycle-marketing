@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Syne, Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
+import { Syne, Plus_Jakarta_Sans, Geist_Mono, Montserrat } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
@@ -20,6 +20,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+});
+
 export const metadata: Metadata = {
   title: "Orbit",
   description: "Full-cycle AI marketing platform",
@@ -34,7 +40,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html
         lang="en"
-        className={`${syne.variable} ${jakarta.variable} ${geistMono.variable} dark h-full antialiased`}
+        className={`${syne.variable} ${jakarta.variable} ${geistMono.variable} ${montserrat.variable} dark h-full antialiased`}
       >
         <body className="min-h-full flex flex-col">{children}</body>
       </html>

@@ -6,7 +6,9 @@ import { motion, useInView } from "framer-motion";
 export const steps = [
   { n: "1", title: "Create a project", body: "Name your product. Orbit sets up a workspace and tracks your progress through each phase." },
   { n: "2", title: "Run Market Intelligence", body: "Enter your industry, product category, and up to five competitors. Orbit returns a full competitive map." },
-  { n: "3", title: "Build your brand", body: "Feed the market gaps into Brand Foundation, then generate your audience personas in Audience Studio." },
+  { n: "3", title: "Build your brand and audience", body: "Feed the market gaps into Brand Foundation, then generate high-fidelity buyer personas in Audience Studio." },
+  { n: "4", title: "Plan your campaign", body: "Turn your research into a campaign brief, channel mix, and three distinct campaign concepts. Select one to move forward." },
+  { n: "5", title: "Generate content", body: "Orbit writes platform-native copy for every selected channel and produces a full repurposing matrix, ready to publish." },
 ];
 
 export function StepRow({ step, index }: { step: typeof steps[0]; index: number }) {

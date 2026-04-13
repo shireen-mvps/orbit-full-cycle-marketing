@@ -32,13 +32,13 @@ export function LandingHero() {
 
         <motion.h1 variants={fadeUp(0.08)} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
           From market gap{" "}
-          <span style={{ color: "oklch(0.72 0.16 185)", textShadow: "0 0 40px oklch(0.72 0.16 185 / 0.4)" }}>to brand strategy</span>
-          <br />in three modules.
+          <span style={{ color: "oklch(0.72 0.16 185)", textShadow: "0 0 40px oklch(0.72 0.16 185 / 0.4)" }}>to live campaign</span>
+          <br />in five modules.
         </motion.h1>
 
         <motion.p variants={fadeUp(0.16)} className="text-base md:text-lg leading-relaxed max-w-xl" style={{ color: "oklch(0.82 0.012 260)" }}>
-          Orbit analyzes your competitive landscape, builds your brand foundation, and generates
-          buyer personas, all grounded in real market data, not generic templates.
+          Orbit takes you from competitive research and brand positioning to audience personas,
+          campaign planning, and multi-channel content, all in one connected workflow.
         </motion.p>
 
         <motion.div variants={fadeUp(0.24)} className="flex items-center justify-center mt-2">

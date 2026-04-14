@@ -98,9 +98,12 @@ export function ProjectCard({ project, index, onDelete }: Props) {
               className="overflow-hidden border-t border-rose-500/20 bg-rose-500/5"
             >
               <div className="px-5 py-3 flex items-center justify-between gap-3">
-                <p className="text-xs text-[var(--foreground)]">
-                  Delete <span className="font-semibold">{project.name}</span>? This cannot be undone.
-                </p>
+                <div className="space-y-0.5">
+                  <p className="text-xs text-[var(--foreground)]">
+                    Delete <span className="font-semibold">{project.name}</span>? This cannot be undone.
+                  </p>
+                  <p className="text-xs text-rose-400/80">Credits used on this project are not refunded.</p>
+                </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setConfirming(false)}

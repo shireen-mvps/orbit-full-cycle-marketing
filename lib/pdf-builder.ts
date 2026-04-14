@@ -28,13 +28,26 @@ function bodyText(doc: PDFDoc, text: string, y: number, opts?: object): number {
   return doc.y + 6;
 }
 
+function stripEmoji(str: string): string {
+  return str.replace(/[^\x20-\x7E]/g, "").trim();
+}
+
 function pillRow(doc: PDFDoc, items: string[], y: number, color = TEAL): number {
   let x = MARGIN;
   const pillH = 16, pillPad = 8, gap = 6;
   items.forEach((item) => {
     const w = doc.widthOfString(item) + pillPad * 2;
     if (x + w > W - MARGIN) { x = MARGIN; y += pillH + gap; }
-    doc.roundedRect(x, y, w, pillH, 3).fillAndStroke(color + "1a", color + "66");
+    // Fill background at low opacity
+    doc.save();
+    doc.fillOpacity(0.1);
+    doc.roundedRect(x, y, w, pillH, 3).fill(color);
+    doc.restore();
+    // Stroke border at medium opacity
+    doc.save();
+    doc.strokeOpacity(0.4);
+    doc.roundedRect(x, y, w, pillH, 3).stroke(color);
+    doc.restore();
     doc.fillColor(color).font("Helvetica").fontSize(8).text(item, x + pillPad, y + 4, { lineBreak: false });
     x += w + gap;
   });
@@ -148,7 +161,8 @@ export async function buildProjectPDF(project: OrbitProject): Promise<Buffer> {
       if (y > 680) { addPageBreak(doc); y = MARGIN; }
       y = label(doc, "Messaging Pillars", y);
       bf.messagingPillars.forEach((p) => {
-        doc.fillColor(TEAL).font("Helvetica-Bold").fontSize(9.5).text(`${p.icon ?? "·"} ${p.title}`, MARGIN, y);
+        const icon = p.icon ? (stripEmoji(p.icon) || "-") : "-";
+        doc.fillColor(TEAL).font("Helvetica-Bold").fontSize(9.5).text(`${icon} ${p.title}`, MARGIN, y);
         doc.fillColor(MUTED).font("Helvetica").fontSize(8.5)
           .text(p.description, MARGIN + 12, doc.y + 2, { width: COL - 12, lineGap: 2 });
         y = doc.y + 8;
@@ -165,8 +179,16 @@ export async function buildProjectPDF(project: OrbitProject): Promise<Buffer> {
     if (tagline) {
       if (y > 730) { addPageBreak(doc); y = MARGIN; }
       y = label(doc, "Tagline", y);
-      doc.rect(MARGIN, y, COL, 28).fill(TEAL + "12");
-      doc.rect(MARGIN, y, COL, 1).fill(TEAL + "44");
+      // Background fill at low opacity
+      doc.save();
+      doc.fillOpacity(0.07);
+      doc.rect(MARGIN, y, COL, 28).fill(TEAL);
+      doc.restore();
+      // Top border at medium opacity
+      doc.save();
+      doc.strokeOpacity(0.27);
+      doc.moveTo(MARGIN, y).lineTo(MARGIN + COL, y).stroke(TEAL);
+      doc.restore();
       doc.fillColor(TEAL).font("Helvetica-Bold").fontSize(12)
         .text(`"${tagline}"`, MARGIN + 12, y + 8, { width: COL - 24 });
       y = doc.y + 16;
@@ -208,7 +230,11 @@ export async function buildProjectPDF(project: OrbitProject): Promise<Buffer> {
       });
       y = Math.max(afterLeft, doc.y) + 6;
       if (p.sampleAdHook) {
-        doc.rect(MARGIN, y, COL, 22).fill(color + "12");
+        // Background fill at low opacity
+        doc.save();
+        doc.fillOpacity(0.07);
+        doc.rect(MARGIN, y, COL, 22).fill(color);
+        doc.restore();
         doc.fillColor(color).font("Helvetica-BoldOblique").fontSize(9)
           .text(`"${p.sampleAdHook}"`, MARGIN + 8, y + 6, { width: COL - 16 });
         y = doc.y + 12;

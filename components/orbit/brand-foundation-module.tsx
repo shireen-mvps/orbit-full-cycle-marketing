@@ -32,10 +32,12 @@ export function BrandFoundationModule({ projectId, projectName, initialData, mar
   const [results, setResults] = useState<BrandFoundation | null>(initialData);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(false);
   const { update: updateCredits } = useCredits();
 
   async function handleSubmit(data: { productName: string; productDescription: string; uniqueFeatures: string[]; targetMarket: string }) {
     setError(null);
+    setLimitReached(false);
     setView("loading");
     setLoadingStep(0);
     const interval = setInterval(() => setLoadingStep((p) => Math.min(p + 1, LOADING_STEPS.length - 1)), 1800);
@@ -47,8 +49,12 @@ export function BrandFoundationModule({ projectId, projectName, initialData, mar
       });
       clearInterval(interval);
       if (!res.ok) {
-        const err = await res.json();
-        setError(err.error ?? "Something went wrong. Please try again.");
+        if (res.status === 429) {
+          setLimitReached(true);
+        } else {
+          const err = await res.json();
+          setError(err.error ?? "Something went wrong. Please try again.");
+        }
         setView("form");
         return;
       }
@@ -84,7 +90,7 @@ export function BrandFoundationModule({ projectId, projectName, initialData, mar
       </div>
 
       <AnimatePresence mode="wait">
-        {view === "form"    && <BrandFoundationForm    key="form"    marketIntel={marketIntel} onSubmit={handleSubmit} error={error} />}
+        {view === "form"    && <BrandFoundationForm    key="form"    marketIntel={marketIntel} onSubmit={handleSubmit} error={error} limitReached={limitReached} />}
         {view === "loading" && <ModuleLoading          key="loading" loadingStep={loadingStep} steps={LOADING_STEPS} />}
         {view === "results" && results && <BrandFoundationResults key="results" results={results} projectId={projectId} />}
       </AnimatePresence>

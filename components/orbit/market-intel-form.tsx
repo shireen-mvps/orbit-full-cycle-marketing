@@ -9,9 +9,10 @@ export interface CompetitorInput { name: string; description: string; }
 interface Props {
   onSubmit: (data: { industry: string; productCategory: string; competitors: CompetitorInput[] }) => void;
   error: string | null;
+  limitReached?: boolean;
 }
 
-export function MarketIntelForm({ onSubmit, error }: Props) {
+export function MarketIntelForm({ onSubmit, error, limitReached }: Props) {
   const [industry, setIndustry] = useState("");
   const [productCategory, setProductCategory] = useState("");
   const [competitors, setCompetitors] = useState<CompetitorInput[]>([{ name: "", description: "" }, { name: "", description: "" }]);
@@ -38,7 +39,16 @@ export function MarketIntelForm({ onSubmit, error }: Props) {
 
   return (
     <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-6">
-      {error && <div className="border border-destructive/40 bg-destructive/10 rounded-lg px-4 py-3 text-sm text-red-400">{error}</div>}
+      {limitReached && (
+        <div className="border border-destructive/40 bg-destructive/10 rounded-lg px-4 py-3 text-sm text-red-400">
+          Demo limit reached (5 credits).{" "}
+          <a href="https://github.com/shireen-mvps/orbit-full-cycle-marketing" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-300 transition-colors">
+            Clone the repo
+          </a>{" "}
+          to run your own instance.
+        </div>
+      )}
+      {error && !limitReached && <div className="border border-destructive/40 bg-destructive/10 rounded-lg px-4 py-3 text-sm text-red-400">{error}</div>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>

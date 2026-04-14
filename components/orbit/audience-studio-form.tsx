@@ -8,9 +8,10 @@ interface Props {
   brandFoundation: BrandFoundation | null;
   onSubmit: (data: { targetMarketDescription: string; painPoints: string; channels: string }) => void;
   error: string | null;
+  limitReached?: boolean;
 }
 
-export function AudienceStudioForm({ brandFoundation, onSubmit, error }: Props) {
+export function AudienceStudioForm({ brandFoundation, onSubmit, error, limitReached }: Props) {
   const [targetMarketDescription, setTargetMarketDescription] = useState("");
   const [painPoints, setPainPoints] = useState("");
   const [channels, setChannels] = useState("");
@@ -38,7 +39,16 @@ export function AudienceStudioForm({ brandFoundation, onSubmit, error }: Props) 
         </div>
       )}
 
-      {error && <div className="border border-destructive/40 bg-destructive/10 rounded-lg px-4 py-3 text-sm text-red-400">{error}</div>}
+      {limitReached && (
+        <div className="border border-destructive/40 bg-destructive/10 rounded-lg px-4 py-3 text-sm text-red-400">
+          Demo limit reached (5 credits).{" "}
+          <a href="https://github.com/shireen-mvps/orbit-full-cycle-marketing" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-300 transition-colors">
+            Clone the repo
+          </a>{" "}
+          to run your own instance.
+        </div>
+      )}
+      {error && !limitReached && <div className="border border-destructive/40 bg-destructive/10 rounded-lg px-4 py-3 text-sm text-red-400">{error}</div>}
 
       <div>
         <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Target Market Description <span className="text-[var(--primary)]">*</span></label>

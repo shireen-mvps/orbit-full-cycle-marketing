@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { anthropic, MODEL } from "@/lib/anthropic";
-import { rateLimiter, globalRateLimiter } from "@/lib/rate-limit";
+import { checkLifetimeLimit } from "@/lib/rate-limit";
 import { sanitizeInput } from "@/lib/validations";
 import { supabase } from "@/lib/supabase";
 
@@ -9,18 +9,10 @@ export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { success: globalOk } = await globalRateLimiter.limit("global");
-  if (!globalOk) {
-    return NextResponse.json(
-      { error: "Service temporarily unavailable. Please try again later." },
-      { status: 503 }
-    );
-  }
-
-  const { success, remaining } = await rateLimiter.limit(userId);
+  const { success, remaining } = await checkLifetimeLimit(userId);
   if (!success) {
     return NextResponse.json(
-      { error: "Daily demo limit reached (30 credits/day). Clone the repo to run your own instance: github.com/shireen-mvps/orbit-full-cycle-marketing" },
+      { error: "Demo limit reached (5 credits). Clone the repo to run your own instance." },
       { status: 429, headers: { "X-Credits-Remaining": "0" } }
     );
   }

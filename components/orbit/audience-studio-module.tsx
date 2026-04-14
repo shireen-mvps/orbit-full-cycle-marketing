@@ -32,10 +32,12 @@ export function AudienceStudioModule({ projectId, projectName, initialData, bran
   const [results, setResults] = useState<AudienceStudio | null>(initialData);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(false);
   const { update: updateCredits } = useCredits();
 
   async function handleSubmit(data: { targetMarketDescription: string; painPoints: string; channels: string }) {
     setError(null);
+    setLimitReached(false);
     setView("loading");
     setLoadingStep(0);
     const interval = setInterval(() => setLoadingStep((p) => Math.min(p + 1, LOADING_STEPS.length - 1)), 1800);
@@ -47,8 +49,12 @@ export function AudienceStudioModule({ projectId, projectName, initialData, bran
       });
       clearInterval(interval);
       if (!res.ok) {
-        const err = await res.json();
-        setError(err.error ?? "Something went wrong. Please try again.");
+        if (res.status === 429) {
+          setLimitReached(true);
+        } else {
+          const err = await res.json();
+          setError(err.error ?? "Something went wrong. Please try again.");
+        }
         setView("form");
         return;
       }
@@ -84,7 +90,7 @@ export function AudienceStudioModule({ projectId, projectName, initialData, bran
       </div>
 
       <AnimatePresence mode="wait">
-        {view === "form"    && <AudienceStudioForm    key="form"    brandFoundation={brandFoundation} onSubmit={handleSubmit} error={error} />}
+        {view === "form"    && <AudienceStudioForm    key="form"    brandFoundation={brandFoundation} onSubmit={handleSubmit} error={error} limitReached={limitReached} />}
         {view === "loading" && <ModuleLoading         key="loading" loadingStep={loadingStep} steps={LOADING_STEPS} />}
         {view === "results" && results && <AudienceStudioResults key="results" results={results} projectId={projectId} />}
       </AnimatePresence>

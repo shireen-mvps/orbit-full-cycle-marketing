@@ -31,10 +31,12 @@ export function MarketIntelModule({ projectId, projectName, initialData }: Props
   const [results, setResults] = useState<MarketIntel | null>(initialData);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(false);
   const { update: updateCredits } = useCredits();
 
   async function handleSubmit(data: { industry: string; productCategory: string; competitors: CompetitorInput[] }) {
     setError(null);
+    setLimitReached(false);
     setView("loading");
     setLoadingStep(0);
     const interval = setInterval(() => setLoadingStep((p) => Math.min(p + 1, LOADING_STEPS.length - 1)), 1800);
@@ -46,8 +48,12 @@ export function MarketIntelModule({ projectId, projectName, initialData }: Props
       });
       clearInterval(interval);
       if (!res.ok) {
-        const err = await res.json();
-        setError(err.error ?? "Something went wrong. Please try again.");
+        if (res.status === 429) {
+          setLimitReached(true);
+        } else {
+          const err = await res.json();
+          setError(err.error ?? "Something went wrong. Please try again.");
+        }
         setView("form");
         return;
       }
@@ -83,7 +89,7 @@ export function MarketIntelModule({ projectId, projectName, initialData }: Props
       </div>
 
       <AnimatePresence mode="wait">
-        {view === "form"    && <MarketIntelForm    key="form"    onSubmit={handleSubmit} error={error} />}
+        {view === "form"    && <MarketIntelForm    key="form"    onSubmit={handleSubmit} error={error} limitReached={limitReached} />}
         {view === "loading" && <ModuleLoading      key="loading" loadingStep={loadingStep} steps={LOADING_STEPS} />}
         {view === "results" && results && <MarketIntelResults key="results" results={results} projectId={projectId} />}
       </AnimatePresence>

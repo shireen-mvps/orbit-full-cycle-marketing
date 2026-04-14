@@ -1,18 +1,15 @@
-import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
 
-// Per-user: 30 AI calls/day (generous demo -- using Haiku for cost efficiency)
-export const rateLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(30, "1 d"),
-  prefix: "orbit:ai",
-});
+const LIFETIME_LIMIT = 5;
 
-// Global circuit breaker: 100 calls/day across all users
-export const globalRateLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(100, "1 d"),
-  prefix: "orbit:global",
-});
+// Per-user lifetime limit: 5 AI calls total (1 full run across all 5 modules)
+export async function checkLifetimeLimit(userId: string): Promise<{ success: boolean; remaining: number }> {
+  const key = `orbit:lifetime:${userId}`;
+  const count = await redis.incr(key);
+  if (count > LIFETIME_LIMIT) {
+    return { success: false, remaining: 0 };
+  }
+  return { success: true, remaining: LIFETIME_LIMIT - count };
+}

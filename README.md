@@ -77,7 +77,7 @@ Every Claude prompt in M2 and M3 is injected with the structured output of the p
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/shireen168/orbit.git
+git clone https://github.com/shireen168/orbit-full-cycle-marketing.git
 cd orbit-full-cycle-marketing
 ```
 
